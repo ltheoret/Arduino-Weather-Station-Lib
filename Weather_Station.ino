@@ -14,6 +14,10 @@
 
 #define BACKLIGHT_PIN     13
 
+#define ALTITUDE 735.0 //Station altitude in meters
+
+int IsOn = 0;
+
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 Adafruit_BMP280 bme; // I2C
@@ -33,6 +37,7 @@ void setup() {
   lcd.print(" By Luc Theoret");
   delay(1000);
   lcd.setCursor(0,2);
+  pinMode(LED_BUILTIN, OUTPUT);
   lcd.print("  BMP280 test");
 
   if (!bme.begin()) {
@@ -155,6 +160,21 @@ void loop() {
   Serial.print("Actual Vapour Pressure: ");
   Serial.print(ActualVapourPressure(DHTRH, DHTTemp));
   Serial.println(" mb");
+  Serial.print("Hunidex: ");
+  Serial.print(Humidex(DHTTemp, DHTRH));
+  // Serial.print(Humidex(30, 15));
+  Serial.println(" *C");
   
   Serial.println("");
+  if (IsOn != 0)
+  {
+    digitalWrite(LED_BUILTIN, LOW);
+    IsOn = 0;
+  }
+  
+  else
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+    IsOn = 1;
+  }
 }
